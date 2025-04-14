@@ -61,7 +61,7 @@ class _MyHomePageState extends State<MyHomePage> {
             Tools.button(
               Tools.text("S'inscrire", TextAlign.center, 18),
                   () async {
-                await versForums(context);
+                await versRegister(context);
               }, Color(0xFFE4E4E4), Size.fromHeight(40),
             ),
             Tools.button(

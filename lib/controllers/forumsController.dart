@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:forum/models/forumModel.dart';
+import '../models/forumModel.dart';
 import '../views/forumsView.dart';
 
 class ForumsController extends StatefulWidget {

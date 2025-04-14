@@ -26,6 +26,7 @@ class ForumsViewState extends State<ForumsView> {
       appBar: AppBar(
         title: Text('Liste des forums'),
         backgroundColor: Color(0xFFebddcc),
+        automaticallyImplyLeading: false,
       ),
       body: FutureBuilder<List<Forum>>(
         future: futureForums,

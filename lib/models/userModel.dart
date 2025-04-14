@@ -45,3 +45,33 @@ class User{
     };
   }
 }
+
+class UserApi{
+
+  Future<int> registerUser({required String email, required String password, required String nom,
+      required String prenom}) async {
+
+
+    final response = await http.post(Uri.parse('${Config.apiUrl}/users'),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({
+        'email': email,
+        'roles': ["user"],
+        'password': password,
+        'nom': nom,
+        'prenom': prenom,
+        'dateInscription': DateTime.now().toString(),
+      }),
+    );
+
+    if (response.statusCode == 201) {
+      return response.statusCode;
+
+    } else {
+      print("Échec de la requête : Code de statut ${response.statusCode}, Réponse : ${response.body}");
+          return response.statusCode;
+    }
+  }
+}

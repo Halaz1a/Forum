@@ -32,8 +32,7 @@ class ForumApi{
     final response = await http.get(Uri.parse('${Config.apiUrl}/forums'));
 
     if (response.statusCode == 200) {
-      final Map<String, dynamic> body = jsonDecode(response.body);
-      final List<dynamic> data = body['member'];
+      final List<dynamic> data = jsonDecode(response.body);
 
       List<Forum> forums = data.map((json) {
         return Forum.fromJson(json);
