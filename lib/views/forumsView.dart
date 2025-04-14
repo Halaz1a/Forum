@@ -44,7 +44,7 @@ class ForumsViewState extends State<ForumsView> {
               itemBuilder: (context, index) {
                 Forum forum = forums[index];
                 return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  padding: const EdgeInsets.symmetric(vertical: 16.0),
                   child: Center(
                     child: Container(
                       width: MediaQuery.of(context).size.width * 0.7,
