@@ -52,5 +52,35 @@ class Tools{
       )
     );
   }
+
+  static ScaffoldFeatureController info(BuildContext context, String text){
+    return ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Tools.text(text, TextAlign.left, 18)),
+    );
+  }
+
+  static Future<void> alerte(BuildContext context, String titre, String content){
+    return showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(titre),
+        content: Text(content),
+        actions: <Widget>[
+          TextButton(
+            child: const Text('OK'),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  static Widget icone(IconData icon, String tooltip, Future<void> Function() onPressed){
+    return IconButton(
+      icon: Icon(icon),
+      tooltip: tooltip,
+      onPressed: onPressed,
+    );
+  }
 }
 

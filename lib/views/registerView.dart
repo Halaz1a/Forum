@@ -28,7 +28,6 @@ class RegisterViewState extends State<RegisterView> {
       appBar: AppBar(
         title: Text('Inscription'),
         backgroundColor: Color(0xFFebddcc),
-        automaticallyImplyLeading: false,
       ),
       body: Form(
         key: widget.keyForm,

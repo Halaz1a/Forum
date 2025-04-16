@@ -1,77 +1,99 @@
 import 'package:flutter/material.dart';
 import 'tools/redirections.dart';
 import 'tools/tools.dart';
+import 'tools/authProvider.dart';
+import 'package:provider/provider.dart';
+import 'models/forumModel.dart';
+import 'tools/secureStorage.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => AuthProvider(),
+      child: Home(),
+    ),
+  );
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class Home extends StatelessWidget {
+  const Home({super.key});
 
-  // This widget is the root of your application.
+  Future<List<Forum>> allForums() async {
+    return await ForumApi().allForums();
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Forum',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.white60),
       ),
       debugShowCheckedModeBanner: false,
-      home: const MyHomePage(title: 'Forum'),
-    );
-  }
-}
+      home: FutureBuilder<List<Forum>>(
+        future: allForums(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Scaffold(
+              body: Center(child: CircularProgressIndicator()),
+            );
+          } else if (snapshot.hasError) {
+            return Scaffold(
+              body: Center(child: Text('Erreur : ${snapshot.error}')),
+            );
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return const Scaffold(
+              body: Center(child: Text('Aucun forum trouvé')),
+            );
+          }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-  final String title;
+          List<Forum> forums = snapshot.data!;
+          final authProvider = Provider.of<AuthProvider>(context);
 
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Color(0xFFebddcc),
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Tools.text("Bienvenue sur Forum !", TextAlign.center, 30),
-            const SizedBox(height: 10),
-            Tools.text(
-              "Connectez-vous pour accéder à l'application",
-              TextAlign.center,
-              25,
+          return Scaffold(
+            appBar: AppBar(
+              title: const Text('Liste des forums'),
+              backgroundColor: const Color(0xFFebddcc),
+              leading: authProvider.isLoggedIn
+                  ? Tools.icone(Icons.account_circle, "Mon compte", () async {
+                await SecureStorage().logout();
+                authProvider.logout();
+                versForums(context);
+              })
+                  : Tools.icone(Icons.person_add_alt, "S'inscrire", () => versRegister(context)),
+              actions: [
+                if (authProvider.isLoggedIn && authProvider.isAdmin)
+                  Tools.icone(Icons.add_circle_outline, "Ajouter un forum", () => versLogin(context)),
+                if (!authProvider.isLoggedIn)
+                  Tools.icone(Icons.login, "Se connecter", () => versLogin(context)),
+              ],
             ),
-            const SizedBox(height: 30),
-
-            Tools.button(
-              Tools.text("Aller aux forums", TextAlign.center, 18),
-              () async {
-                await versForums(context);
-              }, Color(0xFFE4E4E4), Size.fromHeight(40),
+            body: ListView.builder(
+              itemCount: forums.length,
+              itemBuilder: (context, index) {
+                Forum forum = forums[index];
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 16.0),
+                  child: Center(
+                    child: Container(
+                      width: MediaQuery.of(context).size.width * 0.7,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFE4E4E4),
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      child: ListTile(
+                        title: Tools.text(forum.nom.toUpperCase(), TextAlign.center, 18),
+                        onTap: () {
+                          // Action quand on clique sur un forum
+                        },
+                      ),
+                    ),
+                  ),
+                );
+              },
             ),
-            Tools.button(
-              Tools.text("S'inscrire", TextAlign.center, 18),
-                  () async {
-                await versRegister(context);
-              }, Color(0xFFE4E4E4), Size.fromHeight(40),
-            ),
-            Tools.button(
-              Tools.text("Se connecter", TextAlign.center, 18),
-                  () async {
-                await versForums(context);
-              }, Color(0xFFE4E4E4), Size.fromHeight(40),
-            ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }

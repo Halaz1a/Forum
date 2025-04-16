@@ -51,7 +51,6 @@ class UserApi{
   Future<int> registerUser({required String email, required String password, required String nom,
       required String prenom}) async {
 
-
     final response = await http.post(Uri.parse('${Config.apiUrl}/users'),
       headers: {
         'Content-Type': 'application/json',
@@ -72,6 +71,26 @@ class UserApi{
     } else {
       print("Échec de la requête : Code de statut ${response.statusCode}, Réponse : ${response.body}");
           return response.statusCode;
+    }
+  }
+
+  Future<http.Response> login(String email, String password) async {
+
+    final response = await http.post(Uri.parse('${Config.apiUrl}/authentication_token'),
+      headers: {
+        'accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({
+        'email': email,
+        'password': password,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      return response;
+    } else {
+      throw Exception('Failed to login: ${response.reasonPhrase}');
     }
   }
 }

@@ -3,6 +3,7 @@ import 'package:forum/tools/redirections.dart';
 import '../models/userModel.dart';
 import '../views/registerView.dart';
 import '../tools/verifications.dart';
+import '../tools/tools.dart';
 
 class RegisterController extends StatefulWidget {
 
@@ -69,40 +70,15 @@ class RegisterControllerState extends State<RegisterController>{
               password: passwordHash);
 
           if (reponse == 201){
-            await showDialog(
-              context: context,
-              builder: (context) => AlertDialog(
-                title: const Text('Inscription réussie'),
-                content: Text(
-                    'Bonjour, ${_prenomController.text} ${_nomController.text} !'),
-                actions: <Widget>[
-                  TextButton(
-                    child: const Text('OK'),
-                    onPressed: () => {
-                      Navigator.of(context).pop(),
-                    },
-                  ),
-                ],
-              ),
-            );
+            Tools.info(context, "Inscription réussie, bienvenue ${_prenomController.text} ${_nomController.text}");
 
-            versForums(context);
+            Future.delayed(Duration(seconds: 2), () {
+              versLogin(context);
+            });
           }
 
         } catch (e) {
-          showDialog(
-            context: context,
-            builder: (context) => AlertDialog(
-              title: const Text('Erreur'),
-              content: Text('Erreur lors de l\'inscription: $e'),
-              actions: <Widget>[
-                TextButton(
-                  child: const Text('OK'),
-                  onPressed: () => Navigator.of(context).pop(),
-                ),
-              ],
-            ),
-          );
+          Tools.alerte(context, "Erreur", "Erreur lors de l'inscription : $e");
         }
 
       }

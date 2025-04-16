@@ -1,19 +1,14 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../models/forumModel.dart';
-import '../controllers/forumsController.dart';
 import '../controllers/registerController.dart';
+import '../controllers/loginController.dart';
+import '../main.dart';
 
-versForums(BuildContext context) async {
-  List<Forum> forums = await ForumApi().allForums();
+versForums(BuildContext context) {
 
-  Navigator.push(
+  Navigator.pushAndRemoveUntil(
     context,
-    MaterialPageRoute(
-        builder: (context) => ForumsController(
-          forums: forums,
-        ),
-    ),
+    MaterialPageRoute(builder: (context) => const Home()),
+        (Route<dynamic> route) => false,
   );
 }
 
@@ -23,6 +18,17 @@ versRegister(BuildContext context) async {
     context,
     MaterialPageRoute(
       builder: (context) => RegisterController(
+      ),
+    ),
+  );
+}
+
+versLogin(BuildContext context) async {
+
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => LoginController(
       ),
     ),
   );
