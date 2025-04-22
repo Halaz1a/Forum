@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../models/forumModel.dart';
 
 class Tools{
 
@@ -80,6 +81,34 @@ class Tools{
       icon: Icon(icon),
       tooltip: tooltip,
       onPressed: onPressed,
+    );
+  }
+
+  static Future<void> deleteAlerte(BuildContext context, String titre,
+      String content, Future<void> Function() delete, void Function() redirection){
+    return showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(titre),
+        content: Text(content),
+        actions: <Widget>[
+          TextButton(
+            child: const Text('Annuler'),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+          TextButton(
+            child: const Text('Valider'),
+            onPressed: () async {
+              try {
+                await delete();
+                redirection();
+              } catch (e) {
+                print(e);
+              }
+            },
+          ),
+        ],
+      ),
     );
   }
 }

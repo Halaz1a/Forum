@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../controllers/registerController.dart';
 import '../controllers/loginController.dart';
 import '../controllers/addEditForumController.dart';
+import '../controllers/mainController.dart';
 import '../main.dart';
 import 'authProvider.dart';
 import 'package:provider/provider.dart';
@@ -11,8 +12,11 @@ versForums(BuildContext context) {
 
   Navigator.pushAndRemoveUntil(
     context,
-    MaterialPageRoute(builder: (context) => const Home()),
-        (Route<dynamic> route) => false,
+    MaterialPageRoute(
+      builder: (context) => HomeController(
+      ),
+    ),
+    (Route<dynamic> route) => false,
   );
 }
 
@@ -38,7 +42,7 @@ versLogin(BuildContext context) async {
   );
 }
 
-versAddEditForumController(BuildContext context, Forum? forumToEdit) async {
+versAddEditForum(BuildContext context, Forum? forumToEdit) async {
   final authProvider = Provider.of<AuthProvider>(context, listen: false);
 
   if (authProvider.isAdmin){

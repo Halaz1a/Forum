@@ -81,4 +81,18 @@ class ForumApi{
       throw Exception('Failed to edit forum');
     }
   }
+
+  Future<bool> deleteForum({required int id}) async {
+    final token = await storage.readToken();
+
+    final response = await http.delete(Uri.parse('${Config.apiUrl}/forums/$id'),
+        headers: {'Authorization' : 'Bearer $token', 'Content-Type': 'application/json'}
+    );
+
+    if (response.statusCode == 204) {
+      return true;
+    } else {
+      throw Exception('Failed to delete forum');
+    }
+  }
 }
