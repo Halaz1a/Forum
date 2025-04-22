@@ -61,34 +61,38 @@ class LoginControllerState extends State<LoginController> {
   }
 
   Future<void> _login() async {
-    setState(() {
-      _isLoading = true;
-    });
-    try {
-      String passwordHash = Verifications().hashPassword(_passwordController.text);
-
-      final response = await UserApi().login(_emailController.text, passwordHash);
-      final responseData = json.decode(response.body);
-
-      await secureStorage.saveCredentials(_emailController.text, _passwordController.text);
-      Provider.of<AuthProvider>(context, listen: false).login();
-      await secureStorage.saveToken(responseData['token']);
-      await secureStorage.saveRoles(responseData['data']['roles']);
-      Provider.of<AuthProvider>(context, listen: false).admin();
-
-      Tools.info(context, "Authentification réussie");
-
-      Future.delayed(Duration(seconds: 2), () {
-        versForums(context);
-      });
-
-    } catch (e) {
-      Tools.alerte(context, "Erreur", "Erreur lors de l'authentification : $e");
-
-    } finally {
+    if (_formKey.currentState?.validate() ?? false) {
       setState(() {
-        _isLoading = false;
+        _isLoading = true;
       });
+      try {
+        String passwordHash = Verifications().hashPassword(
+            _passwordController.text);
+
+        final response = await UserApi().login(
+            _emailController.text, passwordHash);
+        final responseData = json.decode(response.body);
+
+        await secureStorage.saveCredentials(
+            _emailController.text, _passwordController.text);
+        Provider.of<AuthProvider>(context, listen: false).login();
+        await secureStorage.saveToken(responseData['token']);
+        await secureStorage.saveRoles(responseData['data']['roles']);
+        Provider.of<AuthProvider>(context, listen: false).admin();
+
+        Tools.info(context, "Authentification réussie");
+
+        Future.delayed(Duration(seconds: 2), () {
+          versForums(context);
+        });
+      } catch (e) {
+        Tools.alerte(
+            context, "Erreur", "Erreur lors de l'authentification : $e");
+      } finally {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
   }
 }

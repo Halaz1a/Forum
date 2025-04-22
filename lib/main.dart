@@ -63,7 +63,7 @@ class Home extends StatelessWidget {
                   : Tools.icone(Icons.person_add_alt, "S'inscrire", () => versRegister(context)),
               actions: [
                 if (authProvider.isLoggedIn && authProvider.isAdmin)
-                  Tools.icone(Icons.add_circle_outline, "Ajouter un forum", () => versLogin(context)),
+                  Tools.icone(Icons.add_circle_outline, "Ajouter un forum", () => versAddEditForumController(context, null)),
                 if (!authProvider.isLoggedIn)
                   Tools.icone(Icons.login, "Se connecter", () => versLogin(context)),
               ],
@@ -81,12 +81,27 @@ class Home extends StatelessWidget {
                         color: const Color(0xFFE4E4E4),
                         borderRadius: BorderRadius.circular(30),
                       ),
-                      child: ListTile(
-                        title: Tools.text(forum.nom.toUpperCase(), TextAlign.center, 18),
-                        onTap: () {
-                          // Action quand on clique sur un forum
-                        },
-                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Expanded(
+                              child: ListTile(
+                                title: Tools.text(forum.nom, TextAlign.center, 18),
+                                onTap: () {
+                                  // Action quand on clique sur un forum
+                                },
+                              ),
+                            ),
+                            if (authProvider.isLoggedIn && authProvider.isAdmin)
+                              ...[
+                                Tools.icone(Icons.settings, "Modifier le forum", () => versAddEditForumController(context, forum)),
+                                Tools.icone(Icons.delete_forever, "Supprimer le forum", () => versLogin(context)),
+                              ],
+                          ],
+                        )
+                      )
                     ),
                   ),
                 );

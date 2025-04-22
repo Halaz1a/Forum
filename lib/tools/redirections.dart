@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import '../controllers/registerController.dart';
 import '../controllers/loginController.dart';
+import '../controllers/addEditForumController.dart';
 import '../main.dart';
+import 'authProvider.dart';
+import 'package:provider/provider.dart';
+import '../models/forumModel.dart';
 
 versForums(BuildContext context) {
 
@@ -32,4 +36,19 @@ versLogin(BuildContext context) async {
       ),
     ),
   );
+}
+
+versAddEditForumController(BuildContext context, Forum? forumToEdit) async {
+  final authProvider = Provider.of<AuthProvider>(context, listen: false);
+
+  if (authProvider.isAdmin){
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => AddEditForumController(
+          forumToEdit: forumToEdit
+        ),
+      ),
+    );
+  }
 }

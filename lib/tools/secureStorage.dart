@@ -41,7 +41,7 @@ class SecureStorage {
   Future<bool> readAdmin() async {
     final rolesJson = await _storage.read(key: _keyRoles);
     List<dynamic> roles = List<dynamic>.from(jsonDecode(rolesJson!));
-    return roles.contains("admin");
+    return roles.contains("ROLE_ADMIN");
   }
 
   Future<void> deleteCredentials() async {

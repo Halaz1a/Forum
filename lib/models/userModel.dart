@@ -57,7 +57,7 @@ class UserApi{
       },
       body: jsonEncode({
         'email': email,
-        'roles': ["user"],
+        'roles': ["ROLE_USER"],
         'password': password,
         'nom': nom,
         'prenom': prenom,

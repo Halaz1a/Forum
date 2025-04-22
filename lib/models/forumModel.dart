@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:forum/tools/secureStorage.dart';
 import 'package:http/http.dart' as http;
 import '../tools/config.dart';
 
@@ -28,6 +29,8 @@ class Forum{
 
 class ForumApi{
 
+  final storage = SecureStorage();
+
   Future<List<Forum>> allForums() async {
     final response = await http.get(Uri.parse('${Config.apiUrl}/forums'));
 
@@ -42,6 +45,40 @@ class ForumApi{
 
     } else {
       throw Exception('Failed to load forums');
+    }
+  }
+
+  Future<bool> addForum({required String nom}) async {
+    final token = await storage.readToken();
+
+    final response = await http.post(Uri.parse('${Config.apiUrl}/forums'),
+      headers: {'Authorization' : 'Bearer $token', 'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'nom' : nom.toUpperCase()
+      })
+    );
+
+    if (response.statusCode == 201) {
+      return true;
+    } else {
+      throw Exception('Failed to add forum');
+    }
+  }
+
+  Future<bool> editForum({required int id, required String nom}) async {
+    final token = await storage.readToken();
+
+    final response = await http.patch(Uri.parse('${Config.apiUrl}/forums/$id'),
+        headers: {'Authorization' : 'Bearer $token', 'Content-Type': 'application/merge-patch+json'},
+        body: jsonEncode({
+          'nom' : nom.toUpperCase()
+        })
+    );
+
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      throw Exception('Failed to edit forum');
     }
   }
 }
