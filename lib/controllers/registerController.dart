@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:forum/tools/redirections.dart';
 import '../models/userModel.dart';
 import '../views/registerView.dart';
-import '../tools/verifications.dart';
 import '../tools/tools.dart';
 
 class RegisterController extends StatefulWidget {
@@ -63,11 +62,10 @@ class RegisterControllerState extends State<RegisterController>{
       _confirmPasswordController.text.isNotEmpty) {
 
         try {
-          String passwordHash = Verifications().hashPassword(_passwordController.text);
 
           var reponse = await UserApi().registerUser(email: _emailController.text,
               nom: _nomController.text.toUpperCase(), prenom: _prenomController.text,
-              password: passwordHash);
+              password: _passwordController.text);
 
           if (reponse == 201){
             Tools.info(context, "Inscription réussie, bienvenue ${_prenomController.text} ${_nomController.text}");

@@ -97,7 +97,7 @@ class HomeState extends State<Home> {
                         child: ListTile(
                           title: Tools.text(forum.nom, TextAlign.center, 18),
                           onTap: () {
-                            //Action quand on clique sur un forum
+                            //Redirection vers messagesForum
                           },
                         ),
                       ),
@@ -108,7 +108,7 @@ class HomeState extends State<Home> {
                         Tools.icone(
                           Icons.delete_forever, "Supprimer le forum",
                           () => Tools.deleteAlerte(context, "Supprimer le forum",
-                            "Êtes-vous sûrs de vouloir supprimer le forum ? Tous ses messages seront supprimés.",
+                            "Voulez-vous supprimer le forum ${forum.nom} ? Tous ses messages seront supprimés.",
                             () => ForumApi().deleteForum(id: forum.id), () => versForums(context),
                           ),
                         ),

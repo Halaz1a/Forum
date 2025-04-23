@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'dart:convert';
 import '../tools/redirections.dart';
-import '../tools/verifications.dart';
 import '../tools/secureStorage.dart';
 import '../tools/tools.dart';
 import '../models/userModel.dart';
@@ -66,11 +65,8 @@ class LoginControllerState extends State<LoginController> {
         _isLoading = true;
       });
       try {
-        String passwordHash = Verifications().hashPassword(
-            _passwordController.text);
-
         final response = await UserApi().login(
-            _emailController.text, passwordHash);
+            _emailController.text, _passwordController.text);
         final responseData = json.decode(response.body);
 
         await secureStorage.saveCredentials(

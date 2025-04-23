@@ -21,7 +21,7 @@ class AddEditForumViewState extends State<AddEditForumView> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('Ajouter un forum'),
+          title: (widget.forumToEdit == null) ? Text('Ajouter un forum') : Text('Modifier un forum'),
           backgroundColor: Color(0xFFebddcc),
         ),
         body: Form(

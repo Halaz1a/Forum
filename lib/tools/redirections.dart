@@ -3,7 +3,6 @@ import '../controllers/registerController.dart';
 import '../controllers/loginController.dart';
 import '../controllers/addEditForumController.dart';
 import '../controllers/mainController.dart';
-import '../main.dart';
 import 'authProvider.dart';
 import 'package:provider/provider.dart';
 import '../models/forumModel.dart';
