@@ -72,14 +72,26 @@ class MessageApi{
     if (response.statusCode == 200) {
       final List<dynamic> data = jsonDecode(response.body);
 
-      List<Message> forums = data.map((json) {
+      List<Message> messages = data.map((json) {
         return Message.fromJson(json);
       }).toList();
 
-      return forums;
+      return messages;
 
     } else {
-      throw Exception('Failed to load forums');
+      throw Exception('Failed to load messages');
+    }
+  }
+
+  Future<Message> oneMessage(int messageId) async {
+    final response = await http.get(Uri.parse('${Config.apiUrl}/messages/$messageId'));
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = jsonDecode(response.body);
+      return Message.fromJson(data);
+
+    } else {
+      throw Exception('Failed to load message');
     }
   }
 

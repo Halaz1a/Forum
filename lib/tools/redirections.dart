@@ -38,12 +38,14 @@ versForum(BuildContext context, int forumId) async {
 
 versMessage(BuildContext context, int messageId) async {
   List<Message> messages = await MessageApi().messageReponses(messageId);
+  Message messageSource = await MessageApi().oneMessage(messageId);
   
   Navigator.push(
     context, 
     MaterialPageRoute(
       builder: (context) => MessageController(
-        messages : messages
+        messages : messages,
+        messageSource: messageSource
       )
     )
   );

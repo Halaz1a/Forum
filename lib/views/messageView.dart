@@ -8,11 +8,13 @@ import '../tools/secureStorage.dart';
 
 class MessageView extends StatefulWidget {
   final List<Message> messages;
+  final Message messageSource;
   final String? error;
 
   const MessageView({
     super.key,
     required this.messages,
+    required this.messageSource,
     this.error,
   });
 
@@ -47,10 +49,15 @@ class MessageViewState extends State<MessageView> {
                   () => versRegister(context),
                 ),
         actions: [
+          if (authProvider.isLoggedIn && authProvider.isAdmin)
+            Tools.icone(Icons.add_circle_outline, "Ajouter un forum",
+              () => versAddEditForum(context, null),
+            ),
           if (!authProvider.isLoggedIn)
             Tools.icone(Icons.login, "Se connecter", () => versLogin(context)),
         ],
       ),
+      
       body: ListView.builder(
         itemCount: widget.messages.length,
         itemBuilder: (context, index) {
@@ -88,4 +95,5 @@ class MessageViewState extends State<MessageView> {
       ),
     );
   }
+
 }
