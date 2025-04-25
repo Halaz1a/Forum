@@ -33,7 +33,7 @@ class Message{
     return Message(
       id: json['id'],
       titre: json['titre'],
-      datePoste: json['datePoste'],
+      datePoste: DateTime.parse(json['datePoste']).toLocal(),
       contenu: json['contenu'],
       userNom: json['user']['nom'],
       userId: json['user']['id'],
@@ -79,6 +79,23 @@ class MessageApi{
 
     } else {
       throw Exception('Failed to load forums');
+    }
+  }
+
+  Future<List<Message>> messagesSources(int forumId) async {
+    final response = await http.get(Uri.parse('${Config.apiUrl}/messages'));
+
+    if (response.statusCode == 200) {
+      final List<dynamic> data = jsonDecode(response.body);
+
+      List<Message> messages = data.map((json) {
+        return Message.fromJson(json);
+      }).toList();
+
+      return messages;
+
+    } else {
+      throw Exception('Failed to load messages sources');
     }
   }
 

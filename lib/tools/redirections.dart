@@ -3,9 +3,11 @@ import '../controllers/registerController.dart';
 import '../controllers/loginController.dart';
 import '../controllers/addEditForumController.dart';
 import '../controllers/mainController.dart';
+import '../controllers/forumController.dart';
 import 'authProvider.dart';
 import 'package:provider/provider.dart';
 import '../models/forumModel.dart';
+import '../models/messageModel.dart';
 
 versForums(BuildContext context) {
 
@@ -17,6 +19,20 @@ versForums(BuildContext context) {
     ),
     (Route<dynamic> route) => false,
   );
+}
+
+versForum(BuildContext context, int forumId) async {
+  List<Message> messages = await MessageApi().messagesSources(forumId);
+  
+  Navigator.push(
+    context, 
+    MaterialPageRoute(
+      builder: (context) => ForumController(
+        messages : messages
+      )
+    )
+  );
+
 }
 
 versRegister(BuildContext context) async {
