@@ -87,11 +87,11 @@ class MessageApi{
     final response = await http.get(Uri.parse('${Config.apiUrl}/messages/forum/$forumId/roots'));
 
     if (response.statusCode == 200) {
-      final List<dynamic> data = jsonDecode(response.body);
 
-      List<Message> messages = data.map((json) {
-        return Message.fromJson(json);
-      }).toList();
+      final data = jsonDecode(response.body);
+      final List<dynamic> members = data['hydra:member'];
+
+      List<Message> messages = members.map((json) => Message.fromJson(json)).toList();
 
       return messages;
 
