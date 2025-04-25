@@ -3,26 +3,24 @@ import '../tools/redirections.dart';
 import '../tools/tools.dart';
 import '../tools/authProvider.dart';
 import 'package:provider/provider.dart';
-import '../models/forumModel.dart';
-import '../controllers/forumController.dart';
 import '../models/messageModel.dart';
 import '../tools/secureStorage.dart';
 
-class ForumView extends StatefulWidget {
+class MessageView extends StatefulWidget {
   final List<Message> messages;
   final String? error;
 
-  const ForumView({
+  const MessageView({
     super.key,
     required this.messages,
     this.error,
   });
 
   @override
-  ForumViewState createState() => ForumViewState();
+  MessageViewState createState() => MessageViewState();
 }
 
-class ForumViewState extends State<ForumView> {
+class MessageViewState extends State<MessageView> {
 
   @override
   Widget build(BuildContext context) {
@@ -49,10 +47,6 @@ class ForumViewState extends State<ForumView> {
                   () => versRegister(context),
                 ),
         actions: [
-          if (authProvider.isLoggedIn && authProvider.isAdmin)
-            Tools.icone(Icons.add_circle_outline, "Ajouter un forum",
-              () => versAddEditForum(context, null),
-            ),
           if (!authProvider.isLoggedIn)
             Tools.icone(Icons.login, "Se connecter", () => versLogin(context)),
         ],

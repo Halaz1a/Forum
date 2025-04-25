@@ -4,6 +4,7 @@ import '../controllers/loginController.dart';
 import '../controllers/addEditForumController.dart';
 import '../controllers/mainController.dart';
 import '../controllers/forumController.dart';
+import '../controllers/messageController.dart';
 import 'authProvider.dart';
 import 'package:provider/provider.dart';
 import '../models/forumModel.dart';
@@ -28,6 +29,20 @@ versForum(BuildContext context, int forumId) async {
     context, 
     MaterialPageRoute(
       builder: (context) => ForumController(
+        messages : messages
+      )
+    )
+  );
+
+}
+
+versMessage(BuildContext context, int messageId) async {
+  List<Message> messages = await MessageApi().messageReponses(messageId);
+  
+  Navigator.push(
+    context, 
+    MaterialPageRoute(
+      builder: (context) => MessageController(
         messages : messages
       )
     )
