@@ -12,8 +12,8 @@ class Message{
   final String userPrenom;
   final String userNom;
   final int forumId;
-  final Message? parent;
-  final List<Message>? reponses;
+  final int? parentId;
+  final List<int>? reponsesId;
 
 
   Message({
@@ -25,8 +25,8 @@ class Message{
     required this.userPrenom,
     required this.userNom,
     required this.forumId,
-    this.parent,
-    this.reponses
+    this.parentId,
+    this.reponsesId
   });
 
   factory Message.fromJson(Map<String, dynamic> json) {
@@ -35,19 +35,20 @@ class Message{
       titre: json['titre'],
       datePoste: DateTime.parse(json['datePoste']).toLocal(),
       contenu: json['contenu'],
-      userNom: json['user']['nom'],
       userId: json['user']['id'],
+      userNom: json['user']['nom'],
       userPrenom: json['user']['prenom'],
       forumId: json['forum']['id'],
-      parent: json['parent'],
-      reponses: json['messages']
+      parentId: json['parent'] != null 
+        ? json['parent']['id']
+        : null
     );
   }
 
   Map<String, dynamic> toJson() {
     String? parentLink;
-    if(parent != null) {
-      parentLink = "/forum/api/messages/$parent.id";
+    if(parentId != null) {
+      parentLink = "/forum/api/messages/$parentId";
     }
     return {
       'id' : id,
@@ -83,7 +84,7 @@ class MessageApi{
   }
 
   Future<List<Message>> messagesSources(int forumId) async {
-    final response = await http.get(Uri.parse('${Config.apiUrl}/messages'));
+    final response = await http.get(Uri.parse('${Config.apiUrl}/messages/forum/$forumId/roots'));
 
     if (response.statusCode == 200) {
       final List<dynamic> data = jsonDecode(response.body);
@@ -96,6 +97,23 @@ class MessageApi{
 
     } else {
       throw Exception('Failed to load messages sources');
+    }
+  }
+
+    Future<List<Message>> messageReponses(int messageId) async {
+    final response = await http.get(Uri.parse('${Config.apiUrl}/messages/id/$messageId/responses'));
+
+    if (response.statusCode == 200) {
+      final List<dynamic> data = jsonDecode(response.body);
+
+      List<Message> messages = data.map((json) {
+        return Message.fromJson(json);
+      }).toList();
+
+      return messages;
+
+    } else {
+      throw Exception('Failed to load message responses');
     }
   }
 
@@ -122,11 +140,11 @@ class MessageApi{
     if (response.statusCode == 201) {
       return true;
     } else {
-      throw Exception('Failed to add forum');
+      throw Exception('Failed to add message');
     }
   }
 
-  Future<bool> deleteForum({required int id}) async {
+  Future<bool> deleteMessage({required int id}) async {
     final token = await storage.readToken();
 
     final response = await http.delete(Uri.parse('${Config.apiUrl}/messages/$id'),
@@ -136,7 +154,7 @@ class MessageApi{
     if (response.statusCode == 204) {
       return true;
     } else {
-      throw Exception('Failed to delete forum');
+      throw Exception('Failed to delete message');
     }
   }
 }
