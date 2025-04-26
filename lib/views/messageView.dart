@@ -87,8 +87,8 @@ class MessageViewState extends State<MessageView> {
                       ),
                       if (authProvider.isLoggedIn && authProvider.isAdmin) ...[
                         Tools.icone(
-                          Icons.delete_forever, "Supprimer le forum",
-                          () => Tools.deleteAlerte(context, "Supprimer le forum",
+                          Icons.delete_forever, "Supprimer le message",
+                          () => Tools.deleteAlerte(context, "Supprimer le message",
                             "Voulez-vous supprimer le message ${message.titre} ? Toutes ses réponses seront supprimées.",
                             () => MessageApi().deleteMessage(id: message.id), () => versForum(context, message.forumId),
                           ), 
