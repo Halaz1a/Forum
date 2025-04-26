@@ -5,6 +5,7 @@ import '../controllers/addEditForumController.dart';
 import '../controllers/mainController.dart';
 import '../controllers/forumController.dart';
 import '../controllers/messageController.dart';
+import '../controllers/addMessageController.dart';
 import 'authProvider.dart';
 import 'package:provider/provider.dart';
 import '../models/forumModel.dart';
@@ -85,6 +86,22 @@ versAddEditForum(BuildContext context, Forum? forumToEdit) async {
           forumToEdit: forumToEdit
         ),
       ),
+    );
+  }
+}
+
+versAddMessage(BuildContext context, int forumId, int? parentId) async {
+  final authProvider = Provider.of<AuthProvider>(context, listen: false);
+
+  if (authProvider.isAdmin) {
+    Navigator.push(
+      context, 
+      MaterialPageRoute(
+        builder: (context) => AddMessageController(
+          forumId: forumId,
+          parentId: parentId
+        )
+      )
     );
   }
 }

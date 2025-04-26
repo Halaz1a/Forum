@@ -85,6 +85,15 @@ class MessageViewState extends State<MessageView> {
                           },
                         ),
                       ),
+                      if (authProvider.isLoggedIn && authProvider.isAdmin) ...[
+                        Tools.icone(
+                          Icons.delete_forever, "Supprimer le forum",
+                          () => Tools.deleteAlerte(context, "Supprimer le forum",
+                            "Voulez-vous supprimer le message ${message.titre} ? Toutes ses réponses seront supprimées.",
+                            () => MessageApi().deleteMessage(id: message.id), () => versForum(context, message.forumId),
+                          ), 
+                        ),
+                      ],
                     ],
                   ),
                 ),
@@ -93,6 +102,7 @@ class MessageViewState extends State<MessageView> {
           );
         },
       ),
+      // ajouter ici le bouton pour répondre au message (messageSource.Id)
     );
   }
 

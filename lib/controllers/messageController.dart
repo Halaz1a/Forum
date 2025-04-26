@@ -28,6 +28,5 @@ class MessageControllerState extends State<MessageController> {
       error: error,
     );
   }
-
   
 }
