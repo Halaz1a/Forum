@@ -4,6 +4,10 @@ import '../controllers/loginController.dart';
 import '../controllers/addEditForumController.dart';
 import '../controllers/mainController.dart';
 import '../controllers/userDetailController.dart';
+import '../controllers/forumController.dart';
+import '../controllers/messageController.dart';
+import '../controllers/addMessageController.dart';
+import '../models/messageModel.dart';
 import 'authProvider.dart';
 import 'package:provider/provider.dart';
 import '../models/forumModel.dart';
@@ -18,6 +22,36 @@ versForums(BuildContext context) {
     ),
     (Route<dynamic> route) => false,
   );
+}
+
+versForum(BuildContext context, int forumId) async {
+  List<Message> messages = await MessageApi().messagesSources(forumId);
+
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => ForumController(
+        messages : messages
+      )
+    )
+  );
+
+}
+
+versMessage(BuildContext context, int messageId) async {
+  List<Message> messages = await MessageApi().messageReponses(messageId);
+  Message messageSource = await MessageApi().oneMessage(messageId);
+
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => MessageController(
+        messages : messages,
+        messageSource: messageSource
+      )
+    )
+  );
+
 }
 
 versRegister(BuildContext context) async {
@@ -62,4 +96,20 @@ versUserDetail(BuildContext context) {
     context,
     MaterialPageRoute(builder: (context) => const UserDetailController()),
   );
+}
+
+versAddMessage(BuildContext context, int forumId, int? parentId) async {
+  final authProvider = Provider.of<AuthProvider>(context, listen: false);
+
+  if (authProvider.isAdmin) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => AddMessageController(
+          forumId: forumId,
+          parentId: parentId
+        )
+      )
+    );
+  }
 }

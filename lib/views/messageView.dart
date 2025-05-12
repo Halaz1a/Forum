@@ -1,60 +1,42 @@
 import 'package:flutter/material.dart';
-import 'tools/redirections.dart';
-import 'tools/tools.dart';
-import 'tools/authProvider.dart';
+import '../tools/redirections.dart';
+import '../tools/tools.dart';
+import '../tools/authProvider.dart';
 import 'package:provider/provider.dart';
-import 'models/forumModel.dart';
-import 'tools/secureStorage.dart';
-import 'controllers/mainController.dart';
+import '../models/messageModel.dart';
+import '../tools/secureStorage.dart';
 
-void main() {
-  runApp(
-    ChangeNotifierProvider(
-      create: (context) => AuthProvider(),
-      child: MaterialApp(
-        title: 'Forum',
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.white60),
-        ),
-        debugShowCheckedModeBanner: false,
-        home: HomeController(),
-      ),
-    ),
-  );
-}
-
-class Home extends StatefulWidget {
-  final List<Forum> forums;
-  final bool isLoading;
+class MessageView extends StatefulWidget {
+  final List<Message> messages;
+  final Message messageSource;
   final String? error;
 
-  const Home({
+  const MessageView({
     super.key,
-    required this.forums,
-    required this.isLoading,
+    required this.messages,
+    required this.messageSource,
     this.error,
   });
 
   @override
-  HomeState createState() => HomeState();
+  MessageViewState createState() => MessageViewState();
 }
 
-class HomeState extends State<Home> {
+class MessageViewState extends State<MessageView> {
+
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context);
 
-    if (widget.isLoading) {
-      return const Scaffold(body: Center(child: CircularProgressIndicator()));
-    } else if (widget.error != null) {
+    if (widget.error != null) {
       return Scaffold(body: Center(child: Text('Erreur : ${widget.error}')));
-    } else if (widget.forums.isEmpty) {
-      return const Scaffold(body: Center(child: Text('Aucun forum trouvé')));
+    } else if (widget.messages.isEmpty) {
+      return const Scaffold(body: Center(child: Text('Aucun message trouvé')));
     }
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Liste des forums'),
+        title: const Text('Discussions'),
         backgroundColor: const Color(0xFFebddcc),
         leading:
             authProvider.isLoggedIn
@@ -71,18 +53,15 @@ class HomeState extends State<Home> {
             Tools.icone(Icons.add_circle_outline, "Ajouter un forum",
               () => versAddEditForum(context, null),
             ),
-          if (authProvider.isLoggedIn)
-            Tools.icone(Icons.account_box, "Voir mon compte",
-                  () => versUserDetail(context),
-            ),
           if (!authProvider.isLoggedIn)
             Tools.icone(Icons.login, "Se connecter", () => versLogin(context)),
         ],
       ),
+      
       body: ListView.builder(
-        itemCount: widget.forums.length,
+        itemCount: widget.messages.length,
         itemBuilder: (context, index) {
-          Forum forum = widget.forums[index];
+          Message message = widget.messages[index];
           return Padding(
             padding: const EdgeInsets.symmetric(vertical: 16.0),
             child: Center(
@@ -99,22 +78,20 @@ class HomeState extends State<Home> {
                     children: [
                       Expanded(
                         child: ListTile(
-                          title: Tools.text(forum.nom, TextAlign.center, 18),
+                          title: Tools.text(message.titre, TextAlign.center, 18),
+                          subtitle: Tools.text(message.datePoste.toString(), TextAlign.center, 10),
                           onTap: () {
-                            versForum(context, forum.id);
+                            versMessage(context, message.id);
                           },
                         ),
                       ),
                       if (authProvider.isLoggedIn && authProvider.isAdmin) ...[
-                        Tools.icone(Icons.settings, "Modifier le forum",
-                          () => versAddEditForum(context, forum),
-                        ),
                         Tools.icone(
-                          Icons.delete_forever, "Supprimer le forum",
-                          () => Tools.deleteAlerte(context, "Supprimer le forum",
-                            "Voulez-vous supprimer le forum ${forum.nom} ? Tous ses messages seront supprimés.",
-                            () => ForumApi().deleteForum(id: forum.id), () => versForums(context),
-                          ),
+                          Icons.delete_forever, "Supprimer le message",
+                          () => Tools.deleteAlerte(context, "Supprimer le message",
+                            "Voulez-vous supprimer le message ${message.titre} ? Toutes ses réponses seront supprimées.",
+                            () => MessageApi().deleteMessage(id: message.id), () => versForum(context, message.forumId),
+                          ), 
                         ),
                       ],
                     ],
@@ -125,6 +102,8 @@ class HomeState extends State<Home> {
           );
         },
       ),
+      // ajouter ici le bouton pour répondre au message (messageSource.Id)
     );
   }
+
 }
