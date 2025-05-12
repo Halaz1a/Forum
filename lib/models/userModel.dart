@@ -9,7 +9,7 @@ class User{
   final String password;
   final String nom;
   final String prenom;
-  final DateTime dateInscritpion;
+  final DateTime dateInscription;
 
   User({
     required this.id,
@@ -18,18 +18,20 @@ class User{
     required this.password,
     required this.nom,
     required this.prenom,
-    required this.dateInscritpion
+    required this.dateInscription
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
-      id: json['id'],
-      email: json['email'],
-      roles: json['roles'],
-      password: json['password'],
-      nom: json['nom'],
-      prenom: json['prenom'],
-      dateInscritpion: DateTime.parse(json['dateInscritpion']).toLocal(),
+      id: json['id'] ?? 0,
+      email: json['email'] ?? '',
+      roles: List<String>.from(json['roles'] ?? []),
+      password: json['password'] ?? '',
+      nom: json['nom'] ?? '',
+      prenom: json['prenom'] ?? '',
+      dateInscription: json['dateInscription'] != null
+          ? DateTime.parse(json['dateInscription']).toLocal()
+          : DateTime.now(),
     );
   }
 
@@ -41,7 +43,7 @@ class User{
       'password' : password,
       'nom' : nom,
       'prenom' : prenom,
-      'dateInscritpion' : dateInscritpion.toIso8601String(),
+      'dateInscription' : dateInscription.toIso8601String(),
     };
   }
 }
@@ -93,4 +95,22 @@ class UserApi{
       throw Exception('Failed to login: ${response.reasonPhrase}');
     }
   }
+
+  Future<User?> getUserByEmail(String email) async {
+    final response = await http.get(
+      Uri.parse('${Config.apiUrl}/users/email/$email'),
+      headers: {
+        'accept': 'application/json',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = jsonDecode(response.body);
+      return User.fromJson(data);
+    } else {
+      print("Erreur lors de la récupération de l'utilisateur : ${response.statusCode} - ${response.body}");
+      return null;
+    }
+  }
+
 }

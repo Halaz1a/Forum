@@ -3,6 +3,7 @@ import '../controllers/registerController.dart';
 import '../controllers/loginController.dart';
 import '../controllers/addEditForumController.dart';
 import '../controllers/mainController.dart';
+import '../controllers/userDetailController.dart';
 import 'authProvider.dart';
 import 'package:provider/provider.dart';
 import '../models/forumModel.dart';
@@ -54,4 +55,11 @@ versAddEditForum(BuildContext context, Forum? forumToEdit) async {
       ),
     );
   }
+}
+
+versUserDetail(BuildContext context) {
+  Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => const UserDetailController()),
+  );
 }

@@ -71,6 +71,10 @@ class HomeState extends State<Home> {
             Tools.icone(Icons.add_circle_outline, "Ajouter un forum",
               () => versAddEditForum(context, null),
             ),
+          if (authProvider.isLoggedIn)
+            Tools.icone(Icons.account_box, "Voir mon compte",
+                  () => versUserDetail(context),
+            ),
           if (!authProvider.isLoggedIn)
             Tools.icone(Icons.login, "Se connecter", () => versLogin(context)),
         ],

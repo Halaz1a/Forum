@@ -57,6 +57,7 @@ class LoginControllerState extends State<LoginController> {
       _emailController.text = credentials['email'] ?? '';
       _passwordController.text = credentials['password'] ?? '';
     });
+    await secureStorage.saveEmail(_emailController.text);
   }
 
   Future<void> _login() async {

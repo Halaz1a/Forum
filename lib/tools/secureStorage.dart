@@ -55,4 +55,16 @@ class SecureStorage {
     await _storage.delete(key: _keyToken);
     await _storage.delete(key: _keyRoles);
   }
+
+  Future<void> saveEmail(String email) async {
+    final storage = FlutterSecureStorage();
+    await storage.write(key: 'email', value: email);
+  }
+
+  Future<String?> readEmail() async {
+    final storage = FlutterSecureStorage();
+    return await storage.read(key: 'email');
+  }
+
+
 }
