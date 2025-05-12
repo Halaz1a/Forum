@@ -25,7 +25,7 @@ class AddMessageViewState extends State<AddMessageView> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('Ajouter un forum'),
+          title: Text('Ajouter un message'),
           backgroundColor: Color(0xFFebddcc),
         ),
         body: Form(

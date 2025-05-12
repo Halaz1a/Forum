@@ -47,4 +47,4 @@ app.*.map.json
 
 
 # dev backups 
-/lib/views/messageView.dart.bak
+/lib/*/*.bak

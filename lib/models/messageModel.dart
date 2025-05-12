@@ -130,7 +130,7 @@ class MessageApi{
   Future<bool> addMessage({required String titre, required String contenu, required int userId, required int forumId, int? parentId}) async {
     String? parentLink;
     if (parentId != null) {
-      parentLink = "/forum/api/messages/$parentId";
+      parentLink = "/api/messages/$parentId";
     }
     
     final token = await storage.readToken();
@@ -139,10 +139,10 @@ class MessageApi{
       headers: {'Authorization' : 'Bearer $token', 'Content-Type': 'application/json'},
       body: jsonEncode({
       'titre' : titre,
-      'datePoste' : DateTime.now(),
+      'datePoste' : DateTime.now().toString(),
       'contenu' : contenu, 
-      'user' : "/forum/api/users/$userId",
-      'forum' : "/forum/api/forum/$forumId",
+      'user' : "/api/users/$userId",
+      'forum' : "/api/forums/$forumId",
       'parent' : parentLink
       })
     );
@@ -150,6 +150,7 @@ class MessageApi{
     if (response.statusCode == 201) {
       return true;
     } else {
+      print(response.body);
       throw Exception('Failed to add message');
     }
   }

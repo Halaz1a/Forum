@@ -135,12 +135,11 @@ class MessageViewState extends State<MessageView> {
         ],
       ),
       
-      // Bouton pour répondre au message source
+      // réponse au message 
       floatingActionButton: authProvider.isLoggedIn
           ? FloatingActionButton(
               onPressed: () {
-                // Ajoutez ici la logique pour répondre au message source
-                // Par exemple : versRepondreMessage(context, widget.messageSource.id);
+                versAddMessage(context, widget.messageSource.forumId, widget.messageSource.id);
               },
               child: const Icon(Icons.reply),
             )
