@@ -101,7 +101,7 @@ versUserDetail(BuildContext context) {
 versAddMessage(BuildContext context, int forumId, int? parentId) async {
   final authProvider = Provider.of<AuthProvider>(context, listen: false);
 
-  if (authProvider.isAdmin) {
+  if (authProvider.isLoggedIn) {
     Navigator.push(
       context,
       MaterialPageRoute(
