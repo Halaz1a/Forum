@@ -31,7 +31,8 @@ versForum(BuildContext context, int forumId) async {
     context,
     MaterialPageRoute(
       builder: (context) => ForumController(
-        messages : messages
+        messages : messages,
+        forumId : forumId
       )
     )
   );
@@ -98,7 +99,7 @@ versUserDetail(BuildContext context) {
   );
 }
 
-versAddMessage(BuildContext context, int forumId, int? parentId) async {
+versAddMessage(BuildContext context, int forumId, {int? parentId}) async {
   final authProvider = Provider.of<AuthProvider>(context, listen: false);
 
   if (authProvider.isLoggedIn) {

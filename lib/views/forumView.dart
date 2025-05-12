@@ -10,11 +10,13 @@ import '../tools/secureStorage.dart';
 
 class ForumView extends StatefulWidget {
   final List<Message> messages;
+  final int forumId;
   final String? error;
 
   const ForumView({
     super.key,
     required this.messages,
+    required this.forumId,
     this.error,
   });
 
@@ -36,7 +38,7 @@ class ForumViewState extends State<ForumView> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Forums'),
+        title: const Text('Discussions'),
         backgroundColor: const Color(0xFFebddcc),
         leading:
             authProvider.isLoggedIn
@@ -49,9 +51,9 @@ class ForumViewState extends State<ForumView> {
                   () => versRegister(context),
                 ),
         actions: [
-          if (authProvider.isLoggedIn && authProvider.isAdmin)
+          if (authProvider.isLoggedIn)
             Tools.icone(Icons.add_circle_outline, "Ajouter un forum",
-              () => versAddEditForum(context, null),
+              () => versAddMessage(context, widget.forumId),
             ),
           if (!authProvider.isLoggedIn)
             Tools.icone(Icons.login, "Se connecter", () => versLogin(context)),

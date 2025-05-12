@@ -33,7 +33,7 @@ class MessageViewState extends State<MessageView> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Discussions'),
+        title: const Text('Message'),
         backgroundColor: const Color(0xFFebddcc),
         leading: authProvider.isLoggedIn
             ? Tools.icone(Icons.account_circle, "Mon compte", () async {
@@ -139,7 +139,7 @@ class MessageViewState extends State<MessageView> {
       floatingActionButton: authProvider.isLoggedIn
           ? FloatingActionButton(
               onPressed: () {
-                versAddMessage(context, widget.messageSource.forumId, widget.messageSource.id);
+                versAddMessage(context, widget.messageSource.forumId, parentId: widget.messageSource.id);
               },
               child: const Icon(Icons.reply),
             )
