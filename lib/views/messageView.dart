@@ -23,87 +23,128 @@ class MessageView extends StatefulWidget {
 }
 
 class MessageViewState extends State<MessageView> {
-
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context);
 
     if (widget.error != null) {
       return Scaffold(body: Center(child: Text('Erreur : ${widget.error}')));
-    } else if (widget.messages.isEmpty) {
-      return const Scaffold(body: Center(child: Text('Aucun message trouvé')));
-    }
+    } 
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Discussions'),
         backgroundColor: const Color(0xFFebddcc),
-        leading:
-            authProvider.isLoggedIn
-                ? Tools.icone(Icons.account_circle, "Mon compte", () async {
-                  await SecureStorage().logout();
-                  authProvider.logout();
-                  versForums(context);
-                })
-                : Tools.icone(Icons.person_add_alt, "S'inscrire",
-                  () => versRegister(context),
-                ),
+        leading: authProvider.isLoggedIn
+            ? Tools.icone(Icons.account_circle, "Mon compte", () async {
+                await SecureStorage().logout();
+                authProvider.logout();
+                versForums(context);
+              })
+            : Tools.icone(Icons.person_add_alt, "S'inscrire",
+                () => versRegister(context)),
         actions: [
           if (authProvider.isLoggedIn && authProvider.isAdmin)
             Tools.icone(Icons.add_circle_outline, "Ajouter un forum",
-              () => versAddEditForum(context, null),
-            ),
+              () => versAddEditForum(context, null)),
           if (!authProvider.isLoggedIn)
             Tools.icone(Icons.login, "Se connecter", () => versLogin(context)),
         ],
       ),
       
-      body: ListView.builder(
-        itemCount: widget.messages.length,
-        itemBuilder: (context, index) {
-          Message message = widget.messages[index];
-          return Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16.0),
-            child: Center(
-              child: Container(
-                width: MediaQuery.of(context).size.width * 0.7,
-                decoration: BoxDecoration(
-                  color: const Color(0xFFE4E4E4),
-                  borderRadius: BorderRadius.circular(30),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: ListTile(
-                          title: Tools.text(message.titre, TextAlign.center, 18),
-                          subtitle: Tools.text(message.datePoste.toString(), TextAlign.center, 10),
-                          onTap: () {
-                            versMessage(context, message.id);
-                          },
-                        ),
-                      ),
-                      if (authProvider.isLoggedIn && authProvider.isAdmin) ...[
-                        Tools.icone(
-                          Icons.delete_forever, "Supprimer le message",
-                          () => Tools.deleteAlerte(context, "Supprimer le message",
-                            "Voulez-vous supprimer le message ${message.titre} ? Toutes ses réponses seront supprimées.",
-                            () => MessageApi().deleteMessage(id: message.id), () => versForum(context, message.forumId),
-                          ), 
-                        ),
-                      ],
-                    ],
+      body: CustomScrollView(
+        slivers: [
+          // message source 
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    widget.messageSource.titre,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 22,
+                    ),
                   ),
-                ),
+                  const SizedBox(height: 8),
+                  Text(
+                    widget.messageSource.datePoste.toString(),
+                    style: const TextStyle(
+                      fontStyle: FontStyle.italic,
+                      fontSize: 16,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    widget.messageSource.contenu ?? '',
+                    style: const TextStyle(fontSize: 18),
+                  ),
+                  const Divider(height: 32),
+                  const Text(
+                    'Réponses',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                    ),
+                  ),
+                ],
               ),
             ),
-          );
-        },
+          ),
+          
+          // réponses
+          SliverList(
+            delegate: SliverChildBuilderDelegate(
+              (context, index) {
+                Message message = widget.messages[index];
+                return ListTile(
+                  title: Text(
+                    message.titre,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  subtitle: Text(
+                    message.datePoste.toString(),
+                    style: const TextStyle(
+                      fontStyle: FontStyle.italic,
+                    ),
+                  ),
+                  onTap: () {
+                    versMessage(context, message.id);
+                  },
+                  trailing: authProvider.isLoggedIn && authProvider.isAdmin
+                      ? IconButton(
+                          icon: const Icon(Icons.delete_forever),
+                          onPressed: () => Tools.deleteAlerte(
+                            context, 
+                            "Supprimer le message",
+                            "Voulez-vous supprimer le message ${message.titre} ? Toutes ses réponses seront supprimées.",
+                            () => MessageApi().deleteMessage(id: message.id), 
+                            () => versForum(context, message.forumId),
+                          ),
+                        )
+                      : null,
+                );
+              },
+              childCount: widget.messages.length,
+            ),
+          ),
+        ],
       ),
-      // ajouter ici le bouton pour répondre au message (messageSource.Id)
+      
+      // Bouton pour répondre au message source
+      floatingActionButton: authProvider.isLoggedIn
+          ? FloatingActionButton(
+              onPressed: () {
+                // Ajoutez ici la logique pour répondre au message source
+                // Par exemple : versRepondreMessage(context, widget.messageSource.id);
+              },
+              child: const Icon(Icons.reply),
+            )
+          : null,
     );
   }
-
 }

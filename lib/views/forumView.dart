@@ -36,7 +36,7 @@ class ForumViewState extends State<ForumView> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Discussions'),
+        title: const Text('Forums'),
         backgroundColor: const Color(0xFFebddcc),
         leading:
             authProvider.isLoggedIn
