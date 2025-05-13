@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/messageModel.dart';
+import '../models/userModel.dart';
 import '../views/addMessageView.dart';
 import '../tools/redirections.dart';
 import '../tools/tools.dart';
@@ -7,14 +8,16 @@ import '../tools/tools.dart';
 class AddMessageController extends StatefulWidget {
   final int forumId;
   final int? parentId;
+  final int userId;
+  final bool showUserIdInput;
 
-  const AddMessageController({super.key, required this.forumId, this.parentId});
+  const AddMessageController({super.key, required this.forumId, this.parentId, required this.userId, required this.showUserIdInput});
 
   @override
-  AddEditForumControllerState createState() => AddEditForumControllerState();
+  AddMessageControllerState createState() => AddMessageControllerState();
 }
 
-class AddEditForumControllerState extends State<AddMessageController> {
+class AddMessageControllerState extends State<AddMessageController> {
   final _formKey = GlobalKey<FormState>();
   late TextEditingController _titreInput;
   late TextEditingController _contenuInput;
@@ -29,7 +32,7 @@ class AddEditForumControllerState extends State<AddMessageController> {
     _contenuInput = TextEditingController(
       text: '');
     _userIdInput = TextEditingController(
-      text: '');
+      text: widget.userId.toString());
   }
 
   @override
@@ -49,6 +52,7 @@ class AddEditForumControllerState extends State<AddMessageController> {
         titreInput: _titreInput,
         contenuInput: _contenuInput,
         userIdInput: _userIdInput,
+        showUserIdInput: widget.showUserIdInput,
         onPressed: () async {
           _addMessage();
         }

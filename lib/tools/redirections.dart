@@ -8,7 +8,9 @@ import '../controllers/forumController.dart';
 import '../controllers/messageController.dart';
 import '../controllers/addMessageController.dart';
 import '../models/messageModel.dart';
+import '../models/userModel.dart';
 import 'authProvider.dart';
+import 'secureStorage.dart';
 import 'package:provider/provider.dart';
 import '../models/forumModel.dart';
 
@@ -103,12 +105,25 @@ versAddMessage(BuildContext context, int forumId, {int? parentId}) async {
   final authProvider = Provider.of<AuthProvider>(context, listen: false);
 
   if (authProvider.isLoggedIn) {
+    String? userMail = await SecureStorage().readEmail();
+    int userId = 0; // id that can't work 
+    if (userMail != null) {
+      User? currentUser = await UserApi().getUserByEmail(userMail);
+      if (currentUser != null) {
+        userId = currentUser.id;
+      }
+    }
+
+    bool showUserIdInput = authProvider.isAdmin;
+    
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => AddMessageController(
           forumId: forumId,
-          parentId: parentId
+          parentId: parentId,
+          userId: userId,
+          showUserIdInput: showUserIdInput
         )
       )
     );

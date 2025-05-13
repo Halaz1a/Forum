@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:forum/controllers/addMessageController.dart';
+import 'package:forum/tools/authProvider.dart';
 import '../tools/tools.dart';
 import '../models/forumModel.dart';
 
@@ -10,10 +11,10 @@ class AddMessageView extends StatefulWidget {
   final TextEditingController userIdInput;
   final int forumId;
   final int? parentId;
+  final bool showUserIdInput;
   final VoidCallback onPressed;
 
-  const AddMessageView({super.key, required this.keyForm, required this.titreInput,
-    required this.contenuInput, required this.userIdInput, required this.forumId, this.parentId, required this.onPressed});
+  const AddMessageView({super.key, required this.keyForm, required this.titreInput, required this.contenuInput, required this.userIdInput, required this.forumId, this.parentId, required this.showUserIdInput, required this.onPressed});
 
   @override
   AddMessageViewState createState() => AddMessageViewState();
@@ -55,19 +56,31 @@ class AddMessageViewState extends State<AddMessageView> {
                       return null;
                     },
                   ),
-                  Tools.text("Id de l'auteur : ", TextAlign.start, 18),
-                  Tools.textForm(widget.userIdInput, TextInputType.text,
-                    "Id de l'auteur", false,
-                        (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Veuillez entrer un id';
-                      }
-                      return null;
-                    },
+                  Visibility(
+                    visible: widget.showUserIdInput,
+                    maintainState: true,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Tools.text("Id de l'auteur : ", TextAlign.start, 18),
+                        Tools.textForm(
+                          widget.userIdInput,
+                          TextInputType.text,
+                          "Id de l'auteur",
+                          false,
+                          (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Veuillez entrer un id';
+                            }
+                            return null;
+                          },
+                        ),
+                      ],
+                    ),
                   ),
+
                   SizedBox(height: 20.0),
-                  Tools.button(Tools.text("publier le message",
-                      TextAlign.center, 16), widget.onPressed, Color(0xFFE4E4E4), Size.fromHeight(40)
+                  Tools.button(Tools.text("publier le message", TextAlign.center, 16), widget.onPressed, Color(0xFFE4E4E4), Size.fromHeight(40)
                   ),
                 ],
               )
