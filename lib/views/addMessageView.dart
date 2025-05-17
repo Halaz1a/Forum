@@ -80,7 +80,7 @@ class AddMessageViewState extends State<AddMessageView> {
                   ),
 
                   SizedBox(height: 20.0),
-                  Tools.button(Tools.text("publier le message", TextAlign.center, 16), widget.onPressed, Color(0xFFE4E4E4), Size.fromHeight(40)
+                  Tools.button(Tools.text("Publier le message", TextAlign.center, 16), widget.onPressed, Color(0xFFE4E4E4), Size.fromHeight(40)
                   ),
                 ],
               )

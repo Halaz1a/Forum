@@ -58,11 +58,9 @@ class HomeState extends State<Home> {
         backgroundColor: const Color(0xFFebddcc),
         leading:
             authProvider.isLoggedIn
-                ? Tools.icone(Icons.account_circle, "Mon compte", () async {
-                  await SecureStorage().logout();
-                  authProvider.logout();
-                  versForums(context);
-                })
+                ? Tools.icone(Icons.account_circle, "Mon compte",
+                  () => versUserDetail(context),
+                )
                 : Tools.icone(Icons.person_add_alt, "S'inscrire",
                   () => versRegister(context),
                 ),
@@ -72,9 +70,11 @@ class HomeState extends State<Home> {
               () => versAddEditForum(context, null),
             ),
           if (authProvider.isLoggedIn)
-            Tools.icone(Icons.account_box, "Voir mon compte",
-                  () => versUserDetail(context),
-            ),
+            Tools.icone(Icons.logout, "Se déconnecter", () async {
+              await SecureStorage().logout();
+              authProvider.logout();
+              versForums(context);
+            }),
           if (!authProvider.isLoggedIn)
             Tools.icone(Icons.login, "Se connecter", () => versLogin(context)),
         ],

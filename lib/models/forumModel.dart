@@ -41,6 +41,7 @@ class ForumApi{
         return Forum.fromJson(json);
       }).toList();
 
+      print(response.body);
       return forums;
 
     } else {

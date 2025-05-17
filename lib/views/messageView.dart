@@ -36,17 +36,13 @@ class MessageViewState extends State<MessageView> {
         title: const Text('Message'),
         backgroundColor: const Color(0xFFebddcc),
         leading: authProvider.isLoggedIn
-            ? Tools.icone(Icons.account_circle, "Mon compte", () async {
-                await SecureStorage().logout();
-                authProvider.logout();
-                versForums(context);
-              })
+            ? Tools.icone(Icons.account_circle, "Mon compte",
+              () => versUserDetail(context),
+            )
             : Tools.icone(Icons.person_add_alt, "S'inscrire",
-                () => versRegister(context)),
+              () => versRegister(context),
+            ),
         actions: [
-          if (authProvider.isLoggedIn && authProvider.isAdmin)
-            Tools.icone(Icons.add_circle_outline, "Ajouter un forum",
-              () => versAddEditForum(context, null)),
           if (!authProvider.isLoggedIn)
             Tools.icone(Icons.login, "Se connecter", () => versLogin(context)),
         ],

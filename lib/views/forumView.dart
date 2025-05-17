@@ -42,17 +42,15 @@ class ForumViewState extends State<ForumView> {
         backgroundColor: const Color(0xFFebddcc),
         leading:
             authProvider.isLoggedIn
-                ? Tools.icone(Icons.account_circle, "Mon compte", () async {
-                  await SecureStorage().logout();
-                  authProvider.logout();
-                  versForums(context);
-                })
+                ? Tools.icone(Icons.account_circle, "Mon compte",
+                  () => versUserDetail(context),
+                )
                 : Tools.icone(Icons.person_add_alt, "S'inscrire",
                   () => versRegister(context),
                 ),
         actions: [
           if (authProvider.isLoggedIn)
-            Tools.icone(Icons.add_circle_outline, "Ajouter un forum",
+            Tools.icone(Icons.add_circle_outline, "Ajouter un message",
               () => versAddMessage(context, widget.forumId),
             ),
           if (!authProvider.isLoggedIn)
